@@ -90,13 +90,15 @@ public struct TTGaugeView: View {
                     GaugeElement(section: section, startAngle: sectionStartAngle, trim:  0...CGFloat(sectionSize))
                     
                     // Add round caps at start and end
-                    let capSize:CGFloat = 0.001
-                    if index == 0 {
-                        GaugeElement(section: section, startAngle: sectionStartAngle, trim: 0...capSize, lineCap: .round)
-                    } else if index == sections.count-1 {
-                        GaugeElement(section: section, startAngle: startAngle + angle, trim: 0...capSize, lineCap: .round)
+                    if index == 0 || index == sections.count - 1{
+                        let capSize: CGFloat = 0.001
+                        let startAngle: Double = index == 0 ? sectionStartAngle : startAngle + angle
+                        
+                        GaugeElement(section: section,
+                                     startAngle: startAngle,
+                                     trim: 0...capSize,
+                                     lineCap: .round)
                     }
-                    
                 }
             }
             .overlay(
