@@ -65,7 +65,7 @@ public struct TTGaugeView: View {
     var valueDescription: String?
     var gaugeDescription: String?
     
-    public init(angle: Double, sections: [TTGaugeViewSection], value: Double, valueDescription: String?, gaugeDescription: String?) {
+    public init(angle: Double, sections: [TTGaugeViewSection], value: Double, valueDescription: String? = nil, gaugeDescription: String? = nil) {
         self.angle = angle
         self.sections = sections
         self.value = value
