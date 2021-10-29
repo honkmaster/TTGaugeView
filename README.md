@@ -37,11 +37,13 @@ let sections: [TTGaugeViewSection] = [TTGaugeViewSection(color: .green, size: 0.
                                       TTGaugeViewSection(color: .red, size: 0.1),
                                       TTGaugeViewSection(color: .purple, size: 0.2),
                                       TTGaugeViewSection(color: .blue, size: 0.4)]
-
+                                      
+let settings: TTGaugeViewSettings = TTGaugeViewSettings(faceColor: .blue, needleColor: .orange)
+var value: Double
 let valueDescription = "\(Int(value * 100)) %"
 let gaugeDescription = "My SwiftUI Gauge"
 
-TTGaugeView(angle: angle, sections: sections, value: value, valueDescription: valueDescription, gaugeDescription: gaugeDescription)
+TTGaugeView(angle: angle, sections: sections, settings: settings, value: value, valueDescription: valueDescription, gaugeDescription: gaugeDescription)
 ```
 
 ## Contributing to this project
