@@ -79,7 +79,16 @@ public struct TTGaugeView: View {
         self.angle = angle
         self.sections = sections
         self.settings = settings
-        self.value = value
+        //keeps gauge from going off scale
+        self.value = {
+            if value < 0 {
+                return 0
+            }
+            else if value > 1 {
+                return 1
+            }
+            return value
+        }()
         self.valueDescription = valueDescription
         self.gaugeDescription = gaugeDescription
     }
