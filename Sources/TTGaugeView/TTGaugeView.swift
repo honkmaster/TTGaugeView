@@ -2,7 +2,7 @@
 //  TTGaugeView.swift
 //
 //  Created by Tobias Tiemerding on 28.07.20.
-//
+//  Modified by James Ford
 
 import SwiftUI
 
@@ -30,6 +30,7 @@ struct GaugeElement: View {
 struct NeedleView: View {
     var angle: Double
     var value: Double = 0.0
+    var needleColor: Color?
     
     var body: some View {
         // 90 to start in south orientation, then add offset to keep gauge symetric
@@ -43,13 +44,19 @@ struct NeedleView: View {
                 let rectHeight = geometry.size.width / 20
                 
                 Rectangle()
-                    .fill(Color.black.opacity(0.8))
+                    .fill(                                  //default color is black
+                        { needleColor ?? Color.black }()
+                            .opacity(0.8)
+                    )
                     .cornerRadius(rectWidth / 2)
                     .frame(width: rectWidth, height: rectHeight)
                     .offset(x: rectWidth / 2)
                 
                 Circle()
                     .frame(width: geometry.size.width / 10)
+                    .foregroundColor(
+                        { needleColor ?? Color.black }()
+                    )
             }
             .position(x: geometry.size.width / 2, y: geometry.size.height / 2)
         }
@@ -61,14 +68,27 @@ struct NeedleView: View {
 public struct TTGaugeView: View {
     var angle: Double
     var sections: [TTGaugeViewSection]
+    var settings: TTGaugeViewSettings?
     var value: Double
     var valueDescription: String?
     var gaugeDescription: String?
+    var backgroundColor: Color? { return settings?.faceColor }  // both color variables were here already
+    var needleColor: Color? { return settings?.needleColor }    // but not implemented
     
-    public init(angle: Double, sections: [TTGaugeViewSection], value: Double, valueDescription: String? = nil, gaugeDescription: String? = nil) {
+    public init(angle: Double, sections: [TTGaugeViewSection], settings: TTGaugeViewSettings? = nil, value: Double, valueDescription: String? = nil, gaugeDescription: String? = nil) {
         self.angle = angle
         self.sections = sections
-        self.value = value
+        self.settings = settings
+        //keeps gauge from going off scale
+        self.value = {
+            if value < 0 {
+                return 0
+            }
+            else if value > 1 {
+                return 1
+            }
+            return value
+        }()
         self.valueDescription = valueDescription
         self.gaugeDescription = gaugeDescription
     }
@@ -78,6 +98,11 @@ public struct TTGaugeView: View {
         let startAngle = 90 + (360.0-angle) / 2.0
         
         ZStack {
+            
+            if (backgroundColor != nil) {   //if no color is given, it defaults to clear
+                Circle()
+                    .foregroundColor(backgroundColor)
+            }
             ForEach(sections) { section in
                 // Find index of current section to sum up already covered areas in percent
                 if let index = sections.firstIndex(where: {$0.id == section.id}) {
@@ -113,7 +138,7 @@ public struct TTGaugeView: View {
                     }
                 }, alignment: .bottom)
             
-            NeedleView(angle: angle, value: value)
+            NeedleView(angle: angle, value: value, needleColor: needleColor)
         }
     }
 }
